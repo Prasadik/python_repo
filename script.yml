@@ -1,0 +1,28 @@
+---
+- hosts: java_server
+# gather_facts: no
+  tasks:
+    - name: installing_package
+      apt:
+  #   name: git
+        update_cache: yes
+        name: [ git, maven, wget ]
+        state: present
+      become: yes
+      become_user: root
+    # become_user: ubuntu
+    - name: copy_files
+      copy:
+        src: /root/script.yml
+        dest: /home/ubuntu/
+    - name: execute_shell_command
+      shell: ls /home/ubuntu/
+      register: value
+    - debug:
+        var: value.stdout_lines
+    - name: displaying_content
+      shell: cat "/home/ubuntu/{{ item }}"
+      with_items: "{{ value.stdout_lines }}"
+      register: cat_output
+    - debug: 
+        var: cat_output

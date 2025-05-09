@@ -1,0 +1,27 @@
+---
+- hosts: java_server
+  tasks:
+    - name: installing_packages
+      apt:
+        update_cache: yes
+        name: [openjdk-17-jdk, wget]
+        state: present
+      become: yes
+      become_user: root
+    - name: wget_jenkins
+      shell: wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+      args:
+        creates: /usr/share/keyrings/jenkins-keyring.asc
+    - name: directory
+      shell: echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \https://pkg.jenkins.io/debian-stable binary/ | sudo tee \/etc/apt/sources.list.d/jenkins.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/jenkins.list
+    - name: installing_jenkins
+      apt:
+        name: jenkins
+        state: present
+    - name: start_jenkins
+      systemd:
+        name: jenkins
+        enabled: yes
+        state: started

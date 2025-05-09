@@ -1,0 +1,13 @@
+---
+- hosts: java_server
+  tasks:
+    - name: tree_install
+      apt: 
+        name: tree
+        state: present
+      notify: install_handler
+  handlers:
+    - name: install_handler
+      debug:
+        msg: "tree is installed or uninstalled"
+

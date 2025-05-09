@@ -1,0 +1,15 @@
+---
+- hosts: java_server
+  become: yes
+  tasks:
+    - name: download_using _url
+      get_url:
+        url: https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.36/bin/apache-tomcat-10.1.36.tar.gz
+        dest: /opt/
+    - name: extracting_tomcat
+      unarchive:
+        src: /opt/apache-tomcat-10.1.36.tar.gz
+        dest: /opt/
+        remote_src: yes
+    - name: start_tomcat_service
+      shell: /opt/apache-tomcat-10.1.36/bin/startup.sh
